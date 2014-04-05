@@ -18,6 +18,9 @@ module BitcoinPayments
   mattr_accessor(:default_transaction_count)
   @@default_transaction_count = 25
 
+  mattr_accessor(:default_account)
+  @@default_account = ''
+
   def setup
     yield(self)
   end

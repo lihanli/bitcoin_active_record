@@ -30,7 +30,7 @@ module BitcoinPayments
       request(:getnewaddress, :primary)
     end
 
-    def get_received_transactions(account: '')
+    def get_received_transactions(account: BitcoinPayments.default_account)
       request(:listtransactions, account, BitcoinPayments.default_transaction_count).each do |transaction|
         transaction['amount'] = BigDecimal.new(transaction['amount'].to_s) if transaction['amount']
       end.find_all do |transaction|
