@@ -19,4 +19,8 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
     assert_equal('e9c55c74670dd51530989fb39d020a9a39c4b3af75dcc6efc770151b680c8366', transactions[0]['txid'])
     assert_equal(1, transactions.size)
   end
+
+  def teardown
+    BitcoinPayments.default_transaction_count = 25
+  end
 end
