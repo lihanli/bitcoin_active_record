@@ -6,6 +6,7 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
   end
 
   def test
+    BitcoinPayments::Client.request(:getinfo)
     binding.pry; raise
   end
 end

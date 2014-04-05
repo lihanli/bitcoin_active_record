@@ -5,7 +5,7 @@ Gem::Specification.new do |gem|
   gem.author   = 'Lihan Li'
   gem.email    = 'frankieteardrop@gmail.com'
 
-  gem.add_dependency('require_all')
+  gem.add_dependency('httparty')
 
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
