@@ -24,5 +24,10 @@ module BitcoinPayments
 
       res['result']
     end
+
+    def get_new_address
+      raise if Rails.env.test? || Rails.env.development?
+      request(:getnewaddress, :primary)
+    end
   end
 end
