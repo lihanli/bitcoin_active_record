@@ -6,7 +6,6 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
   end
 
   def test
-    BitcoinPayments::Client.request(:getinfo)
-    binding.pry; raise
+    assert_equal(false, BitcoinPayments::Client.request(:getinfo).nil?)
   end
 end

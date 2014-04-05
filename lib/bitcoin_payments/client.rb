@@ -6,10 +6,10 @@ module BitcoinPayments
       args.map! { |a| a.is_a?(BigDecimal) ? a.to_f : a }
 
       res = HTTParty.post(
-        CONFIG[:bitcoind][:host],
+        BitcoinPayments.server[:url],
         basic_auth: {
-          username: CONFIG[:bitcoind][:username],
-          password: CONFIG[:bitcoind][:password],
+          username: BitcoinPayments.server[:username],
+          password: BitcoinPayments.server[:password],
         },
         headers: {
           'Content-Type' => 'application/json',
