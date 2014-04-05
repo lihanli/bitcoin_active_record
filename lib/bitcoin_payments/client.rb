@@ -29,5 +29,15 @@ module BitcoinPayments
       raise if Rails.env.test? || Rails.env.development?
       request(:getnewaddress, :primary)
     end
+
+    def get_received_transactions(account: '')
+      request(:listtransactions, account, BitcoinPayments.default_transaction_count).each do |transaction|
+        transaction['amount'] = BigDecimal.new(transaction['amount'].to_s) if transaction['amount']
+      end.find_all do |transaction|
+        (transaction['category'] == 'receive' &&
+         transaction['confirmations'] > 0 &&
+         transaction['amount'] >= BitcoinPayments.minimum_amount)
+      end.reverse
+    end
   end
 end

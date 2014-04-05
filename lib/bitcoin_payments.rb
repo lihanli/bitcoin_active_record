@@ -1,5 +1,6 @@
 require('active_support/dependencies')
 require('httparty')
+require('bigdecimal')
 
 module BitcoinPayments
   module_function
@@ -10,6 +11,12 @@ module BitcoinPayments
     username: nil,
     password: nil,
   }
+
+  mattr_accessor(:minimum_amount)
+  @@minimum_amount = BigDecimal.new('0.001')
+
+  mattr_accessor(:default_transaction_count)
+  @@default_transaction_count = 25
 
   def setup
     yield(self)
