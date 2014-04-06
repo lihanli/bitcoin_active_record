@@ -39,5 +39,9 @@ module BitcoinPayments
          transaction['amount'] >= BitcoinPayments.minimum_amount)
       end.reverse
     end
+
+    def move_to_fees(amount)
+      request(:move, BitcoinPayments.default_account, :fees, amount)
+    end
   end
 end

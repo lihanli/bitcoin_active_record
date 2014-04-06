@@ -5,6 +5,8 @@ require('bigdecimal')
 module BitcoinPayments
   module_function
 
+  ZERO = BigDecimal.new(0)
+
   mattr_accessor(:server)
   @@server = {
     url: nil,

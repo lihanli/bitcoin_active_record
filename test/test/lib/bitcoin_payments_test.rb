@@ -4,6 +4,7 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
   def setup
     super
     @client = BitcoinPayments::Client
+    BitcoinPayments.default_account = :primary
   end
 
   def test_get_received_transactions
@@ -18,6 +19,14 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
     transactions = @client.get_received_transactions
     assert_equal('e9c55c74670dd51530989fb39d020a9a39c4b3af75dcc6efc770151b680c8366', transactions[0]['txid'])
     assert_equal(1, transactions.size)
+  end
+
+  def test_move_to_fees
+    amount = BigDecimal.new('0.0001')
+    assert_equal(true, @client.move_to_fees(amount))
+    # move fee back to default account
+    @client.request(:move, :fees, BitcoinPayments.default_account, amount)
+    assert_equal(BitcoinPayments::ZERO, @client.request(:getbalance, :fees))
   end
 
   def teardown
