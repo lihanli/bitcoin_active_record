@@ -1,0 +1,20 @@
+PATH
+  remote: .
+  specs:
+    bitcoin_payments (0.0.1)
+      httparty
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    httparty (0.13.1)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
+    json (1.8.1)
+    multi_xml (0.5.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bitcoin_payments!
