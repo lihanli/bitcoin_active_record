@@ -26,6 +26,11 @@ module BitcoinPayments
   def setup
     yield(self)
   end
+
+  def setup_model
+    file = __FILE__
+    binding.pry; raise
+  end
 end
 
 require('bitcoin_payments/client')
