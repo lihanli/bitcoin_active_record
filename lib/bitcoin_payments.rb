@@ -7,21 +7,16 @@ module BitcoinPayments
 
   ZERO = BigDecimal.new(0)
 
-  mattr_accessor(:server)
-  @@server = {
-    url: nil,
-    username: nil,
-    password: nil,
-  }
-
-  mattr_accessor(:minimum_amount)
-  @@minimum_amount = BigDecimal.new('0.001')
-
-  mattr_accessor(:default_transaction_count)
-  @@default_transaction_count = 25
-
-  mattr_accessor(:default_account)
-  @@default_account = ''
+  mattr_accessor(:server) do
+    {
+      url: nil,
+      username: nil,
+      password: nil,
+    }
+  end
+  mattr_accessor(:minimum_amount) { BigDecimal.new('0.001') }
+  mattr_accessor(:default_transaction_count) { 25 }
+  mattr_accessor(:default_account) { '' }
 
   def setup
     yield(self)
