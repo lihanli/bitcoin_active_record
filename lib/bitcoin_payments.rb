@@ -1,9 +1,16 @@
-require('active_support/dependencies')
-require('httparty')
-require('bigdecimal')
+require 'active_support/dependencies'
+require 'active_support/concern'
+require 'httparty'
+require 'bigdecimal'
 
 module BitcoinPayments
   module_function
+
+  autoload(:Client, 'bitcoin_payments/client')
+
+  module Models
+    autoload(:Payment, 'bitcoin_payments/models/payment')
+  end
 
   ZERO = BigDecimal.new(0)
 
@@ -21,11 +28,6 @@ module BitcoinPayments
   def setup
     yield(self)
   end
-
-  def setup_model
-    file = __FILE__
-    binding.pry; raise
-  end
 end
 
-require('bitcoin_payments/client')
+require 'bitcoin_payments/models'
