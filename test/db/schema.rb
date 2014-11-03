@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141103031546) do
+ActiveRecord::Schema.define(version: 20141103235057) do
 
   create_table "btc_addresses", force: true do |t|
     t.string "public_key", null: false
