@@ -63,30 +63,30 @@ module BitcoinPayments
       addresses[0]
     end
 
-    # def create_received_payments
-    #   # TODO finish
-    #   page = 0
-    #   while true
-    #     transactions = get_received_transactions(page: page)
+    def create_received_payments
+      # TODO finish
+      page = 0
+      while true
+        transactions = get_received_transactions(page: page)
 
-    #     transactions.each do |transaction|
-    #       break if Payment.where(txid: transaction['txid']).count > 0
+        transactions.each do |transaction|
+          break if Payment.where(txid: transaction['txid']).count > 0
 
-    #       btc_address = BtcAddress.where(public_key: transaction['address']).first
+          btc_address = BtcAddress.where(public_key: transaction['address']).first
 
-    #       received_payment = ReceivedPayment.create!(
-    #         payment: Payment.new(
-    #           btc_address: BtcAddress.find_or_initialize_by(
-    #             public_key: get_sender_address(transaction['txid'])
-    #           ),
-    #           amount: transaction['amount'],
-    #           txid: transaction['txid'],
-    #         ),
-    #       )
+          received_payment = ReceivedPayment.create!(
+            payment: Payment.new(
+              btc_address: BtcAddress.find_or_initialize_by(
+                public_key: get_sender_address(transaction['txid'])
+              ),
+              amount: transaction['amount'],
+              txid: transaction['txid'],
+            ),
+          )
 
-    #       LoggerHelper.ts_puts("received_payment created: #{received_payment.inspect}")
-    #     end
-    #   end
-    # end
+          LoggerHelper.ts_puts("received_payment created: #{received_payment.inspect}")
+        end
+      end
+    end
   end
 end

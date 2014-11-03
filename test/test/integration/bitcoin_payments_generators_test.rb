@@ -32,7 +32,16 @@ class BitcoinPaymentsGeneratorsTest < ActiveSupport::TestCase
 
     assert_equal(4, model_files.tap do |files|
       files.each do |filename|
-        assert_equal("class #{`basename #{filename}`.gsub(".rb\n", '').camelize} < ActiveRecord::Base\n  bitcoin_payments_model\nend\n", `cat #{filename}`)
+        camel_case_model_name = `basename #{filename}`.gsub(".rb\n", '').camelize
+        args = if camel_case_model_name == 'ReceivedPayment'
+          "(payment_receiving_model: 'ModelName')"
+        elsif camel_case_model_name == 'SentPayment'
+          "(payment_sending_model: 'ModelName')"
+        else
+          ''
+        end
+
+        assert_equal("class #{camel_case_model_name} < ActiveRecord::Base\n  bitcoin_payments_model#{args}\nend\n", `cat #{filename}`)
       end
     end.size)
   end
