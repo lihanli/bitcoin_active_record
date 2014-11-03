@@ -1,22 +1,16 @@
-module BitcoinPayments
-  module Models
-    module Payment
-      require 'auto_strip_attributes'
+module BitcoinPayments::Models::Payment
+  extend ActiveSupport::Concern
 
-      extend ActiveSupport::Concern
+  included do
+    belongs_to(:btc_address, inverse_of: :payments, dependent: :destroy, autosave: true)
 
-      included do
-        belongs_to(:btc_address, inverse_of: :payments, dependent: :destroy, autosave: true)
+    has_one(:received_payment, inverse_of: :payment)
+    has_one(:sent_payment, inverse_of: :payment)
 
-        has_one(:received_payment, inverse_of: :payment)
-        has_one(:sent_payment, inverse_of: :payment)
+    validates(:txid, :btc_address, :amount, presence: true)
+    validates(:amount, numericality: true)
+    validates(:txid, uniqueness: true)
 
-        validates(:txid, :btc_address, :amount, presence: true)
-        validates(:amount, numericality: true)
-        validates(:txid, uniqueness: true)
-
-        auto_strip_attributes(:txid)
-      end
-    end
+    auto_strip_attributes(:txid)
   end
 end

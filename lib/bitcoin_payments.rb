@@ -2,6 +2,7 @@ require 'active_support/dependencies'
 require 'active_support/concern'
 require 'httparty'
 require 'bigdecimal'
+require 'auto_strip_attributes'
 
 module BitcoinPayments
   module_function
