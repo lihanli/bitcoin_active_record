@@ -1,3 +1,3 @@
 class ReceivedPayment < ActiveRecord::Base
-  setup_model(self.name.underscore)
+  bitcoin_payments_model
 end

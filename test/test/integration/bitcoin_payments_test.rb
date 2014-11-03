@@ -4,6 +4,7 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
   def setup
     super
     @client = BitcoinPayments::Client
+    raise if @client.request(:getinfo).nil?
     BitcoinPayments.default_account = :primary
   end
 

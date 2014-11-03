@@ -32,7 +32,7 @@ class BitcoinPaymentsGeneratorsTest < ActiveSupport::TestCase
 
     assert_equal(4, model_files.tap do |files|
       files.each do |filename|
-        assert_equal("class #{`basename #{filename}`.gsub(".rb\n", '').camelize} < ActiveRecord::Base\n  setup_model(self.name.underscore)\nend\n", `cat #{filename}`)
+        assert_equal("class #{`basename #{filename}`.gsub(".rb\n", '').camelize} < ActiveRecord::Base\n  bitcoin_payments_model\nend\n", `cat #{filename}`)
       end
     end.size)
   end

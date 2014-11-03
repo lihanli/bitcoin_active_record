@@ -9,5 +9,7 @@ gem 'bitcoin_payments', path: '..'
 
 gem 'pry-nav'
 gem 'pry-rails'
+
 group :test do
+  gem 'minitest-reporters'
 end

@@ -1,7 +1,7 @@
 module BitcoinPayments
   module Models
-    def setup_model(name)
-      include "BitcoinPayments::Models::#{name.camelize}".constantize
+    def bitcoin_payments_model
+      include "BitcoinPayments::Models::#{self}".constantize
     end
   end
 end
