@@ -29,6 +29,11 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
     assert_one_transaction('ade4cf44b718b4c338f6962f2501a01dd7e203aa2e2df1bdab6383c1599e0aa6', transaction_args: { page: 1 })
   end
 
+  def test_get_sender_address
+    address = @client.get_sender_address('889c90a43a198ea1c851b621172861736007bc5e526024631eb05062a808b81d')
+    assert_equal('1DdqT5jdq8smJMS7uoGZL84d566pLAvxsr', address)
+  end
+
   def test_move_to_fees
     amount = BigDecimal.new('0.0001')
     assert_equal(true, @client.move_to_fees(amount))

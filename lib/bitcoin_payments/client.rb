@@ -51,6 +51,18 @@ module BitcoinPayments
       request(:move, BitcoinPayments.default_account, :fees, amount)
     end
 
+    def get_sender_address(txid)
+      addresses = []
+      raw_tx = request('decoderawtransaction', request('getrawtransaction', txid))
+
+      raw_tx['vin'].each do |input|
+        input_raw_tx = request('decoderawtransaction', request('getrawtransaction', input['txid']))
+        addresses << input_raw_tx['vout'][input['vout']]['scriptPubKey']['addresses'][0]
+      end
+
+      addresses[0]
+    end
+
     # def create_received_payments
     #   # TODO finish
     #   page = 0
@@ -61,11 +73,8 @@ module BitcoinPayments
     #       break if Payment.where(txid: transaction['txid']).count > 0
 
     #       btc_address = BtcAddress.where(public_key: transaction['address']).first
-    #       match = btc_address.match_participant_bet.match_participant.match rescue nil
-    #       next if match.nil? || match.completed?
 
     #       received_payment = ReceivedPayment.create!(
-    #         match_participant_bet: btc_address.match_participant_bet,
     #         payment: Payment.new(
     #           btc_address: BtcAddress.find_or_initialize_by(
     #             public_key: get_sender_address(transaction['txid'])
