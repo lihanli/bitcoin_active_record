@@ -10,7 +10,15 @@ module BitcoinPayments
   autoload(:Client, 'bitcoin_payments/client')
 
   module Models
-    autoload(:Payment, 'bitcoin_payments/models/payment')
+    lambda do
+      path_prefix = 'bitcoin_payments/models/'
+
+      Dir["#{File.dirname(__FILE__)}/#{path_prefix}*.rb"].map do |file|
+        File.basename(file, '.rb')
+      end.each do |file_name|
+        autoload(file_name.camelize, "#{path_prefix}#{file_name}")
+      end
+    end.()
   end
 
   ZERO = BigDecimal.new(0)
