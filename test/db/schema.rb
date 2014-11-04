@@ -11,7 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141103235057) do
+ActiveRecord::Schema.define(version: 20141103235925) do
+
+  create_table "bets", force: true do |t|
+    t.integer "btc_address_id", null: false
+  end
+
+  add_index "bets", ["btc_address_id"], name: "index_bets_on_btc_address_id"
+
+  create_table "betting_rounds", force: true do |t|
+    t.boolean "paid", default: false, null: false
+  end
 
   create_table "btc_addresses", force: true do |t|
     t.string "public_key", null: false
