@@ -17,7 +17,7 @@ module BitcoinPayments::Models::PaymentReceivingModel
   end
 
   def amount
-    return ZERO if received_payments.size == 0
+    return BitcoinPayments::ZERO if received_payments.size == 0
     received_payments.map(&:amount).reduce(:+)
   end
 end
