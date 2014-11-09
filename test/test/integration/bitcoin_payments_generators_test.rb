@@ -1,22 +1,23 @@
 require 'test_helper'
 
 class BitcoinPaymentsGeneratorsTest < ActiveSupport::TestCase
-  def model_files
-    `ls app/models/*.rb`.split("\n")
-  end
-
   def setup
     # backup old files
     @initializer_file = 'config/initializers/bitcoin_payments.rb'
+    @model_files = `ls app/models/*.rb`.split("\n")
+
     system("mv #{@initializer_file} #{@initializer_file}.bak")
 
-    model_files.each do |filename|
+    @model_files.each do |filename|
       system("mv #{filename} #{filename}.bak")
     end
 
     # run generator
     system('bundle exec rails g bitcoin_payments:install')
-    @migration_file = "db/migrate/#{`ls db/migrate`.split("\n").last}"
+
+    @migration_file = 'db/migrate/' + `ls db/migrate`.split("\n").find_all do |filename|
+      filename.include?('create_bitcoin_payments_models')
+    end[0]
   end
 
   def test_install_generator
@@ -30,29 +31,27 @@ class BitcoinPaymentsGeneratorsTest < ActiveSupport::TestCase
       assert_equal(migration_file_text, `cat #{@migration_file}`)
     end.()
 
-    assert_equal(4, model_files.tap do |files|
-      files.each do |filename|
-        camel_case_model_name = `basename #{filename}`.gsub(".rb\n", '').camelize
-        args = if camel_case_model_name == 'ReceivedPayment'
-          "(payment_receiving_model: 'ModelName')"
-        elsif camel_case_model_name == 'SentPayment'
-          "(payment_sending_model: 'ModelName')"
-        else
-          ''
-        end
-
-        assert_equal("class #{camel_case_model_name} < ActiveRecord::Base\n  bitcoin_payments_model#{args}\nend\n", `cat #{filename}`)
+    %w(btc_address payment received_payment sent_payment).each do |model_name|
+      camel_case_model_name = model_name.camelize
+      filename = "app/models/#{model_name}.rb"
+      args = if camel_case_model_name == 'ReceivedPayment'
+        "(payment_receiving_model: 'ModelName')"
+      elsif camel_case_model_name == 'SentPayment'
+        "(payment_sending_model: 'ModelName')"
+      else
+        ''
       end
-    end.size)
+
+      assert_equal("class #{camel_case_model_name} < ActiveRecord::Base\n  bitcoin_payments_model#{args}\nend\n", `cat #{filename}`)
+    end
   end
 
   def teardown
     system("rm #{@initializer_file}")
-    system("rm #{@migration_file}")
     system("mv #{@initializer_file}.bak #{@initializer_file}")
 
-    model_files.each do |filename|
-      system("rm #{filename}")
+    @model_files.each do |filename|
+      system("rm #{filename}") if File.exists?(filename)
       system("mv #{filename}.bak #{filename}")
     end
   end
