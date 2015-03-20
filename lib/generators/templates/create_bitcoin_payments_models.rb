@@ -15,8 +15,10 @@ class CreateBitcoinPaymentsModels < ActiveRecord::Migration
 
     create_table "received_payments" do |t|
       t.integer "payment_id", null: false
+      t.integer "btc_address_id", null: false
     end
     add_index "received_payments", ["payment_id"], unique: true
+    add_index :received_payments, :btc_address_id
 
     create_table "sent_payments" do |t|
       t.integer "payment_id", null: false
