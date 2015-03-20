@@ -66,11 +66,13 @@ module BitcoinPayments
     def create_received_payments
       # TODO finish
       page = 0
+
       while true
         transactions = get_received_transactions(page: page)
+        return if transactions.size == 0
 
         transactions.each do |transaction|
-          break if Payment.where(txid: transaction['txid']).count > 0
+          return if Payment.where(txid: transaction['txid']).count > 0
 
           btc_address = BtcAddress.where(public_key: transaction['address']).first
 
@@ -86,6 +88,8 @@ module BitcoinPayments
 
           LoggerHelper.ts_puts("received_payment created: #{received_payment.inspect}")
         end
+
+        page += 1
       end
     end
   end

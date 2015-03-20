@@ -8,6 +8,13 @@ module BitcoinPayments
 
         model_name.constantize.include("BitcoinPayments::Models::#{type.camelize}".constantize) if model_name.present?
       end
+
+      if payment_receiving_model
+        payment_receiving_model_underscore = payment_receiving_model.underscore
+
+        belongs_to(payment_receiving_model.underscore, inverse_of: :received_payments)
+        validates(payment_receiving_model_underscore, presence: true)
+      end
     end
   end
 end
