@@ -72,16 +72,17 @@ module BitcoinPayments
         return if transactions.size == 0
 
         transactions.each do |transaction|
-          return if Payment.where(txid: transaction['txid']).count > 0
+          txid = transaction['txid']
+          return if Payment.where(txid: txid).count > 0
 
           received_payment = ReceivedPayment.create!(
             payment: Payment.new(
               # payment from this address
               btc_address: BtcAddress.find_or_initialize_by(
-                public_key: get_sender_address(transaction['txid'])
+                public_key: get_sender_address(txid)
               ),
               amount: transaction['amount'],
-              txid: transaction['txid'],
+              txid: txid,
             ),
             # sent to this address
             btc_address: BtcAddress.find_or_initialize_by(public_key: transaction['address']),
