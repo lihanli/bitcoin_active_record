@@ -73,6 +73,7 @@ module BitcoinPayments
 
         transactions.each do |transaction|
           txid = transaction['txid']
+          # already created payment for this transaction and all older ones
           return if Payment.where(txid: txid).count > 0
 
           received_payment = ReceivedPayment.create!(
