@@ -3,6 +3,7 @@ module BitcoinPayments::Models::ReceivedPayment
 
   included do
     belongs_to(:payment, inverse_of: :received_payment, dependent: :destroy)
+    belongs_to(:btc_address, inverse_of: :received_payments)
 
     validates(:payment, presence: true)
     validates(:payment_id, uniqueness: true)
