@@ -10,11 +10,13 @@ module BitcoinPayments
       end
 
       if payment_receiving_model
-        payment_receiving_model_underscore = payment_receiving_model.underscore
+        payment_receiving_model_underscore = payment_receiving_model.underscore.to_sym
 
         belongs_to(payment_receiving_model.underscore, inverse_of: :received_payments)
         validates(payment_receiving_model_underscore, presence: true)
         alias_method(:payment_receiving_model, payment_receiving_model_underscore)
+
+        BtcAddress.has_one(payment_receiving_model_underscore, inverse_of: :btc_address)
       end
     end
   end
