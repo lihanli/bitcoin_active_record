@@ -2,6 +2,8 @@ module BitcoinPayments::Models::Payment
   extend ActiveSupport::Concern
 
   included do
+    # sender's address for received payments
+    # payee address for sent payments
     belongs_to(:btc_address, inverse_of: :payments, dependent: :destroy)
 
     has_one(:received_payment, inverse_of: :payment)

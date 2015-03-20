@@ -78,12 +78,15 @@ module BitcoinPayments
 
           received_payment = ReceivedPayment.create!(
             payment: Payment.new(
+              # payment from this address
               btc_address: BtcAddress.find_or_initialize_by(
                 public_key: get_sender_address(transaction['txid'])
               ),
               amount: transaction['amount'],
               txid: transaction['txid'],
             ),
+            # paid to this address
+            btc_address: btc_address,
           )
 
           LoggerHelper.ts_puts("received_payment created: #{received_payment.inspect}")
