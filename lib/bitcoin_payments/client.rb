@@ -74,8 +74,6 @@ module BitcoinPayments
         transactions.each do |transaction|
           return if Payment.where(txid: transaction['txid']).count > 0
 
-          btc_address = BtcAddress.where(public_key: transaction['address']).first
-
           received_payment = ReceivedPayment.create!(
             payment: Payment.new(
               # payment from this address
@@ -85,8 +83,8 @@ module BitcoinPayments
               amount: transaction['amount'],
               txid: transaction['txid'],
             ),
-            # paid to this address
-            btc_address: btc_address,
+            # sent to this address
+            btc_address: BtcAddress.find_or_initialize_by(public_key: transaction['address']),
           )
 
           LoggerHelper.ts_puts("received_payment created: #{received_payment.inspect}")
