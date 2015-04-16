@@ -1,3 +1,3 @@
 class SentPayment < ActiveRecord::Base
-  bitcoin_payments_model(payment_sending_model: 'ModelName')
+  bitcoin_payments_model
 end
