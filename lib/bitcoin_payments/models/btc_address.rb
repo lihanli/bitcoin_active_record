@@ -13,9 +13,4 @@ module BitcoinPayments::Models::BtcAddress
       end
     end
   end
-
-  def amount
-    return BitcoinPayments::ZERO if received_payments.size == 0
-    payments.sum(:amount)
-  end
 end
