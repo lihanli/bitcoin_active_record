@@ -52,6 +52,8 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
       assert_equal(expected_values[:txid], payment.txid)
       assert_equal(expected_values[:receiver_key], received_payment.btc_address.public_key)
     end
+
+    # TODO test running it again wont do anything
   end
 
   def test_get_received_transactions
