@@ -10,7 +10,7 @@ module BitcoinPayments::Models::Payment
     has_one(:sent_payment, inverse_of: :payment)
 
     validates(:txid, :btc_address, :amount, presence: true)
-    validates(:amount, numericality: { greater_than_or_equal_to: BitcoinPayments::ZERO })
+    validates(:amount, numericality: { greater_than_or_equal_to: 0 })
     validates(:txid, uniqueness: true)
 
     auto_strip_attributes(:txid)
