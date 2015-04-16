@@ -16,6 +16,18 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
     assert_equal(1, transactions.size)
   end
 
+  def test_create_received_payments
+    BitcoinPayments.default_account = :test
+    BitcoinPayments.default_transaction_count = 1
+
+    @client.create_received_payments
+    received_payments = ReceivedPayment.all.to_a
+    assert_equal('15fRQywgNeF2JDVADbMQTE4sftxLAnGfhn', received_payments[0].payment.btc_address.public_key)
+    assert_equal(BigDecimal.new('0.001'), received_payments[0].payment.amount)
+    assert_equal('e9c55c74670dd51530989fb39d020a9a39c4b3af75dcc6efc770151b680c8366', received_payments[0].payment.txid)
+    assert_equal('1AC8jNajH7zYikxRzRKT3otNW72B9qVDFa', received_payments[0].btc_address.public_key)
+  end
+
   def test_get_received_transactions
     BitcoinPayments.default_account = :test
     # test right order
