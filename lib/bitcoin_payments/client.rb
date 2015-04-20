@@ -27,9 +27,9 @@ module BitcoinPayments
       res['result']
     end
 
-    def get_new_address
+    def get_new_address(account: BitcoinPayments.default_account)
       raise if Rails.env.test? || Rails.env.development?
-      request(:getnewaddress, :primary)
+      request(:getnewaddress, account)
     end
 
     def get_received_transactions(account: BitcoinPayments.default_account, page: 0)
