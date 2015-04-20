@@ -84,6 +84,19 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
     assert_equal(BitcoinPayments::ZERO, @client.request(:getbalance, :fees))
   end
 
+  def test_invalid_request
+    rescue_called = false
+
+    begin
+      @client.request('dog')
+    rescue BitcoinPayments::ApiError => e
+      rescue_called = true
+      assert_equal(true, e.message.include?('Method not found'))
+    end
+
+    assert_equal(true, rescue_called)
+  end
+
   def teardown
     BitcoinPayments.default_transaction_count = 25
   end

@@ -1,4 +1,6 @@
 module BitcoinPayments
+  class ApiError < StandardError; end
+
   module Client
     module_function
 
@@ -20,7 +22,7 @@ module BitcoinPayments
           id: 'jsonrpc',
         }.to_json,
       )
-      raise res.inspect unless res['error'].nil?
+      raise ApiError.new(res) unless res['error'].nil?
 
       res['result']
     end
