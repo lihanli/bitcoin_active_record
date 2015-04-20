@@ -53,7 +53,9 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
       assert_equal(expected_values[:receiver_key], received_payment.btc_address.public_key)
     end
 
-    # TODO test running it again wont do anything
+    # running again shouldnt do anything
+    @client.create_received_payments
+    assert_equal(3, ReceivedPayment.count)
   end
 
   def test_get_received_transactions
