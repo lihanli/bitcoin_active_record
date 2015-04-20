@@ -13,7 +13,7 @@ class BitcoinPaymentsGeneratorsTest < ActiveSupport::TestCase
     end
 
     # run generator
-    system('bundle exec rails g bitcoin_payments:install')
+    system('bin/rails g bitcoin_payments:install')
 
     @migration_file = 'db/migrate/' + `ls db/migrate`.split("\n").find_all do |filename|
       filename.include?('create_bitcoin_payments_models')
