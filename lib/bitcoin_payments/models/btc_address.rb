@@ -7,6 +7,8 @@ module BitcoinPayments::Models::BtcAddress
 
     validates(:public_key, presence: true, uniqueness: { case_sensitive: true })
 
+    auto_strip_attributes(:public_key)
+
     before_validation do
       if public_key.blank?
         self.public_key = BitcoinHelper.get_new_address
