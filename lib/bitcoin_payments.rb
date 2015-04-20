@@ -30,7 +30,7 @@ module BitcoinPayments
       password: nil,
     }
   end
-  mattr_accessor(:minimum_amount) { BigDecimal.new('0.001') }
+  mattr_accessor(:minimum_amount) { 0 }
   mattr_accessor(:default_transaction_count) { 25 }
   mattr_accessor(:default_account) { '' }
 
