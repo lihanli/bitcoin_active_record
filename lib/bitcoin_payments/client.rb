@@ -49,10 +49,6 @@ module BitcoinPayments
       end.reverse
     end
 
-    def move_to_fees(amount)
-      request(:move, BitcoinPayments.default_account, :fees, amount)
-    end
-
     def get_sender_address(txid)
       addresses = []
       raw_tx = request('decoderawtransaction', request('getrawtransaction', txid))

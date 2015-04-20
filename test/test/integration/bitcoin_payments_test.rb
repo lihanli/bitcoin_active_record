@@ -76,14 +76,6 @@ class BitcoinPaymentsTest < ActiveSupport::TestCase
     assert_equal('1DdqT5jdq8smJMS7uoGZL84d566pLAvxsr', address)
   end
 
-  def test_move_to_fees
-    amount = BigDecimal.new('0.0001')
-    assert_equal(true, @client.move_to_fees(amount))
-    # move fee back to default account
-    @client.request(:move, :fees, BitcoinPayments.default_account, amount)
-    assert_equal(BitcoinPayments::ZERO, @client.request(:getbalance, :fees))
-  end
-
   def test_invalid_request
     rescue_called = false
 
