@@ -4,7 +4,7 @@ module BitcoinPayments::Models::Payment
   included do
     # sender's address for received payments
     # payee address for sent payments
-    belongs_to(:btc_address, inverse_of: :payments, dependent: :destroy)
+    belongs_to(:btc_address, inverse_of: :payments)
 
     has_one(:received_payment, inverse_of: :payment)
     has_one(:sent_payment, inverse_of: :payment)
