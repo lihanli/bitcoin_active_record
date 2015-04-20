@@ -67,6 +67,7 @@ module BitcoinPayments
 
     def create_received_payments
       # TODO finish
+      # TODO allow user to specify account
       page = 0
 
       while true
