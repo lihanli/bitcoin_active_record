@@ -73,19 +73,23 @@ module BitcoinPayments
           # already created payment for this transaction and all older ones
           return if Payment.where(txid: txid).count > 0
 
-          ReceivedPayment.create!(
+          amount = transaction['amount']
+          from_key = get_sender_address(txid)
+
+          received_payment = ReceivedPayment.create!(
             payment: Payment.new(
               # payment from this address
               btc_address: BtcAddress.find_or_initialize_by(
-                public_key: get_sender_address(txid)
+                public_key: from_key
               ),
-              amount: transaction['amount'],
+              amount: amount,
               txid: txid,
             ),
             # sent to this address
             btc_address: BtcAddress.find_or_initialize_by(public_key: transaction['address']),
           )
-          # TODO log this
+
+          Rails.logger.info("Received payment #{amount} BTC from #{from_key}: #{received_payment.inspect}")
         end
 
         page += 1
