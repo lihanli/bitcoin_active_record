@@ -23,19 +23,19 @@ class BitcoinPaymentsGeneratorsTest < ActiveSupport::TestCase
   def test_install_generator
     lambda do
       config_file_text = "BitcoinPayments.setup do |config|\n  config.server[:url] = 'http://127.0.0.1:8332'\n  config.server[:username] = ''\n  config.server[:password] = ''\nend"
-      assert_equal(config_file_text, `cat #{@initializer_file}`)
+      assert_equal(config_file_text, File.read(@initializer_file))
     end.()
 
     lambda do
       migration_file_text = "class CreateBitcoinPaymentsModels < ActiveRecord::Migration\n  def change\n    create_table \"payments\" do |t|\n      t.integer \"btc_address_id\", null: false\n      t.decimal \"amount\",         null: false\n      t.string  \"txid\",           null: false\n      t.timestamps\n    end\n    add_index \"payments\", [\"btc_address_id\"]\n    add_index \"payments\", [\"txid\"], unique: true\n\n    create_table \"btc_addresses\" do |t|\n      t.string  \"public_key\", null: false\n      t.timestamps\n    end\n    add_index \"btc_addresses\", [\"public_key\"], unique: true\n\n    create_table \"received_payments\" do |t|\n      t.integer \"payment_id\", null: false\n      t.integer \"btc_address_id\", null: false\n      t.timestamps\n    end\n    add_index \"received_payments\", [\"payment_id\"], unique: true\n    add_index :received_payments, :btc_address_id\n\n    create_table \"sent_payments\" do |t|\n      t.integer \"payment_id\", null: false\n      t.timestamps\n    end\n    add_index \"sent_payments\", [\"payment_id\"], unique: true\n  end\nend\n"
-      assert_equal(migration_file_text, `cat #{@migration_file}`)
+      assert_equal(migration_file_text, File.read(@migration_file))
     end.()
 
     %w(btc_address payment received_payment sent_payment).each do |model_name|
       camel_case_model_name = model_name.camelize
       filename = "app/models/#{model_name}.rb"
 
-      assert_equal("class #{camel_case_model_name} < ActiveRecord::Base\n  bitcoin_payments_model\nend\n", `cat #{filename}`)
+      assert_equal("class #{camel_case_model_name} < ActiveRecord::Base\n  bitcoin_payments_model\nend\n", File.read(filename))
     end
   end
 
