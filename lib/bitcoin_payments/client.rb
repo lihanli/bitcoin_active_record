@@ -61,13 +61,11 @@ module BitcoinPayments
       addresses[0]
     end
 
-    def create_received_payments
-      # TODO finish
-      # TODO allow user to specify account
+    def create_received_payments(account: BitcoinPayments.default_account)
       page = 0
 
       while true
-        transactions = get_received_transactions(page: page)
+        transactions = get_received_transactions(page: page, account: account)
         return if transactions.size == 0
 
         transactions.each do |transaction|
