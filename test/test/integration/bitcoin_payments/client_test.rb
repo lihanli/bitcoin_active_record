@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class BitcoinPaymentsTest < ActiveSupport::TestCase
+class BitcoinPaymentsClientTest < ActiveSupport::TestCase
   def setup
     super
     @client = BitcoinPayments::Client
