@@ -86,6 +86,22 @@ class BitcoinPaymentsClientTest < ActiveSupport::TestCase
   end
 
   def test_pay
+    public_key = 'abcd12423324'
+    amount = BigDecimal.new(1)
+    comment = 'foo'
+    txid = 'kjdksfjlk2323'
+    @client.expects(:request).with(:sendtoaddress, public_key, amount, comment).returns(txid)
+
+    sent_payment = @client.pay(public_key: public_key, amount: amount, comment: comment) do |sent_payment|
+      assert_equal(false, sent_payment.persisted?)
+    end
+
+    payment = sent_payment.payment
+
+    assert_equal(true, sent_payment.persisted?)
+    assert_equal(public_key, payment.btc_address.public_key)
+    assert_equal(amount, payment.amount)
+    assert_equal(txid, payment.txid)
   end
 
   def teardown

@@ -74,7 +74,7 @@ module BitcoinPayments
           txid: request(:sendtoaddress, public_key, amount, comment),
         ),
       )
-      yield(send_payment) if block_given?
+      yield(sent_payment) if block_given?
 
       sent_payment.save!
 
