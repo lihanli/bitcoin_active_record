@@ -6,6 +6,7 @@ module BitcoinPayments
 
     def request(method, *args)
       args.map! { |a| a.is_a?(BigDecimal) ? a.to_f : a }
+      raise 'payments disabled in test/development' if method.to_sym == :sendtoaddress && (Rails.env.test? || Rails.env.development?)
 
       res = HTTParty.post(
         BitcoinPayments.server[:url],
@@ -61,6 +62,25 @@ module BitcoinPayments
       addresses[0]
     end
 
+    def pay(public_key: nil, amount: nil, comment: '')
+      raise 'amount required' if amount.nil?
+      raise 'amount cant be zero or negative' unless amount > 0
+      raise 'public key required' if public_key.blank?
+
+      sent_payment = SentPayment.new(
+        payment: Payment.new(
+          btc_address: BtcAddress.find_or_initialize_by(public_key: public_key),
+          amount: amount,
+          txid: request(:sendtoaddress, public_key, amount, comment),
+        ),
+      )
+      yield(send_payment) if block_given?
+
+      sent_payment.save!
+
+      sent_payment
+    end
+
     def create_received_payments(account: BitcoinPayments.default_account)
       page = 0
 
@@ -89,6 +109,7 @@ module BitcoinPayments
             btc_address: BtcAddress.find_or_initialize_by(public_key: transaction['address']),
           )
 
+          # TODO log to stdout
           Rails.logger.info("Received payment #{amount} BTC from #{from_key}: #{received_payment.inspect}")
         end
 

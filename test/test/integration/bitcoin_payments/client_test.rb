@@ -76,16 +76,16 @@ class BitcoinPaymentsClientTest < ActiveSupport::TestCase
   end
 
   def test_invalid_request
-    rescue_called = false
+    exception = assert_raise(BitcoinPayments::ApiError) { @client.request('dog') }
+    assert_equal(true, exception.message.include?('Method not found'))
+  end
 
-    begin
-      @client.request('dog')
-    rescue BitcoinPayments::ApiError => e
-      rescue_called = true
-      assert_equal(true, e.message.include?('Method not found'))
-    end
+  def test_payments_disabled_in_test
+    exception = assert_raise(RuntimeError) { @client.request('sendtoaddress', 'abcd') }
+    assert_equal('payments disabled in test/development', exception.message)
+  end
 
-    assert_equal(true, rescue_called)
+  def test_pay
   end
 
   def teardown
