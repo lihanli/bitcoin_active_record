@@ -1,4 +1,4 @@
 task :test do
   Dir.chdir('test')
-  system('bundle exec rake test')
+  system('bin/rake test')
 end
