@@ -17,7 +17,7 @@ class BitcoinPaymentsClientTest < ActiveSupport::TestCase
   end
 
   def test_create_received_payments
-    BitcoinPayments.default_transaction_count = 1
+    BitcoinPayments.default_transaction_count = 2
 
     @client.create_received_payments(account: :test)
     received_payments = ReceivedPayment.all.to_a
