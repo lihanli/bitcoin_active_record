@@ -11,7 +11,7 @@ module BitcoinPayments::Models::BtcAddress
 
     before_validation do
       if public_key.blank?
-        self.public_key = BitcoinHelper.get_new_address
+        self.public_key = BitcoinPayments::Client.get_new_address
       end
     end
   end

@@ -28,7 +28,7 @@ module BitcoinPayments
     end
 
     def get_new_address(account: BitcoinPayments.default_account)
-      raise if Rails.env.test? || Rails.env.development?
+      raise if Rails.env.test?
       request(:getnewaddress, account)
     end
 
