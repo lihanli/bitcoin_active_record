@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bitcoin_payments (0.0.1)
+    bitcoin_active_record (0.0.1)
       auto_strip_attributes (>= 2.0.4)
       httparty (>= 0.13.1)
 
@@ -40,4 +40,4 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bitcoin_payments!
+  bitcoin_active_record!

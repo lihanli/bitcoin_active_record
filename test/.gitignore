@@ -15,4 +15,4 @@
 /log/*.log
 /tmp
 
-config/initializers/bitcoin_payments.rb
+config/initializers/bitcoin_active_record.rb

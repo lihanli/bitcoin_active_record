@@ -1,4 +1,4 @@
-module BitcoinPayments::Models::Payment
+module BitcoinActiveRecord::Models::Payment
   extend ActiveSupport::Concern
 
   included do

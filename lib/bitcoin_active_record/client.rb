@@ -1,4 +1,4 @@
-module BitcoinPayments
+module BitcoinActiveRecord
   class ApiError < StandardError; end
 
   module Client
@@ -9,10 +9,10 @@ module BitcoinPayments
       raise 'payments disabled in test/development' if method.to_sym == :sendtoaddress && (Rails.env.test? || Rails.env.development?)
 
       res = HTTParty.post(
-        BitcoinPayments.server[:url],
+        BitcoinActiveRecord.server[:url],
         basic_auth: {
-          username: BitcoinPayments.server[:username],
-          password: BitcoinPayments.server[:password],
+          username: BitcoinActiveRecord.server[:username],
+          password: BitcoinActiveRecord.server[:password],
         },
         headers: {
           'Content-Type' => 'application/json',
@@ -28,25 +28,25 @@ module BitcoinPayments
       res['result']
     end
 
-    def get_new_address(account: BitcoinPayments.default_account)
+    def get_new_address(account: BitcoinActiveRecord.default_account)
       raise if Rails.env.test?
       request(:getnewaddress, account)
     end
 
-    def get_received_transactions(account: BitcoinPayments.default_account, page: 0)
-      from = page * BitcoinPayments.default_transaction_count
+    def get_received_transactions(account: BitcoinActiveRecord.default_account, page: 0)
+      from = page * BitcoinActiveRecord.default_transaction_count
 
       request(
         :listtransactions,
         account,
-        BitcoinPayments.default_transaction_count,
+        BitcoinActiveRecord.default_transaction_count,
         from,
       ).each do |transaction|
         transaction['amount'] = BigDecimal.new(transaction['amount'].to_s) if transaction['amount']
       end.find_all do |transaction|
         (transaction['category'] == 'receive' &&
          transaction['confirmations'] > 0 &&
-         transaction['amount'] >= BitcoinPayments.minimum_amount)
+         transaction['amount'] >= BitcoinActiveRecord.minimum_amount)
       end.reverse
     end
 
@@ -81,7 +81,7 @@ module BitcoinPayments
       sent_payment
     end
 
-    def create_received_payments(account: BitcoinPayments.default_account)
+    def create_received_payments(account: BitcoinActiveRecord.default_account)
       page = 0
 
       while true

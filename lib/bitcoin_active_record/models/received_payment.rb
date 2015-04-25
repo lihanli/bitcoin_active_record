@@ -1,4 +1,4 @@
-module BitcoinPayments::Models::ReceivedPayment
+module BitcoinActiveRecord::Models::ReceivedPayment
   extend ActiveSupport::Concern
 
   included do
@@ -7,7 +7,7 @@ module BitcoinPayments::Models::ReceivedPayment
 
     validates(:payment, presence: true)
     validates(:payment_id, uniqueness: true)
-    validates(:amount, numericality: { greater_than_or_equal_to: BitcoinPayments.minimum_amount })
+    validates(:amount, numericality: { greater_than_or_equal_to: BitcoinActiveRecord.minimum_amount })
 
     delegate(:amount, to: :payment)
   end

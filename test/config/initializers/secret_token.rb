@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-BitcoinPaymentsApp::Application.config.secret_key_base = 'b4a8fda4941db98135e470dd351b7529d7a349d9bea4f909af410b9154fd22dce413c6b88ffd582bd9b0ad4462dbf874845562b0f20ce13411694b7b911b3069'
+BitcoinActiveRecordApp::Application.config.secret_key_base = 'b4a8fda4941db98135e470dd351b7529d7a349d9bea4f909af410b9154fd22dce413c6b88ffd582bd9b0ad4462dbf874845562b0f20ce13411694b7b911b3069'

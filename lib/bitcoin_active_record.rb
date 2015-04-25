@@ -4,14 +4,14 @@ require 'httparty'
 require 'bigdecimal'
 require 'auto_strip_attributes'
 
-module BitcoinPayments
+module BitcoinActiveRecord
   module_function
 
-  autoload(:Client, 'bitcoin_payments/client')
+  autoload(:Client, 'bitcoin_active_record/client')
 
   module Models
     lambda do
-      path_prefix = 'bitcoin_payments/models/'
+      path_prefix = 'bitcoin_active_record/models/'
 
       Dir["#{File.dirname(__FILE__)}/#{path_prefix}*.rb"].map do |file|
         File.basename(file, '.rb')
@@ -39,4 +39,4 @@ module BitcoinPayments
   end
 end
 
-require 'bitcoin_payments/models'
+require 'bitcoin_active_record/models'

@@ -1,4 +1,4 @@
-class CreateBitcoinPaymentsModels < ActiveRecord::Migration
+class CreateBitcoinActiveRecordModels < ActiveRecord::Migration
   def change
     create_table "payments" do |t|
       t.integer "btc_address_id", null: false

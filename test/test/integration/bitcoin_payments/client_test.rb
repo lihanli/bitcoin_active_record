@@ -1,15 +1,15 @@
 require 'test_helper'
 
-class BitcoinPaymentsClientTest < ActiveSupport::TestCase
+class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
   def setup
     super
-    @client = BitcoinPayments::Client
+    @client = BitcoinActiveRecord::Client
     raise 'bitcoin client config error' if @client.request(:getinfo).nil?
-    BitcoinPayments.default_account = :primary
+    BitcoinActiveRecord.default_account = :primary
   end
 
   def assert_one_transaction(txid, transaction_args: {})
-    BitcoinPayments.default_transaction_count = 1
+    BitcoinActiveRecord.default_transaction_count = 1
     transactions = @client.get_received_transactions(transaction_args)
 
     assert_equal(txid, transactions[0]['txid'])
@@ -17,7 +17,7 @@ class BitcoinPaymentsClientTest < ActiveSupport::TestCase
   end
 
   def test_create_received_payments
-    BitcoinPayments.default_transaction_count = 2
+    BitcoinActiveRecord.default_transaction_count = 2
 
     @client.create_received_payments(account: :test)
     received_payments = ReceivedPayment.all.to_a
@@ -58,7 +58,7 @@ class BitcoinPaymentsClientTest < ActiveSupport::TestCase
   end
 
   def test_get_received_transactions
-    BitcoinPayments.default_account = :test
+    BitcoinActiveRecord.default_account = :test
     # test right order
     transactions = @client.get_received_transactions
 
@@ -76,7 +76,7 @@ class BitcoinPaymentsClientTest < ActiveSupport::TestCase
   end
 
   def test_invalid_request
-    exception = assert_raise(BitcoinPayments::ApiError) { @client.request('dog') }
+    exception = assert_raise(BitcoinActiveRecord::ApiError) { @client.request('dog') }
     assert_equal(true, exception.message.include?('Method not found'))
   end
 
@@ -105,6 +105,6 @@ class BitcoinPaymentsClientTest < ActiveSupport::TestCase
   end
 
   def teardown
-    BitcoinPayments.default_transaction_count = 25
+    BitcoinActiveRecord.default_transaction_count = 25
   end
 end

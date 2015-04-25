@@ -1,7 +1,7 @@
 require 'rails/generators'
 require "rails/generators/active_record"
 
-module BitcoinPayments
+module BitcoinActiveRecord
   module Generators
     class InstallGenerator < ActiveRecord::Generators::Base
       # ActiveRecord::Generators::Base inherits from Rails::Generators::NamedBase which requires a NAME parameter for the
@@ -11,7 +11,7 @@ module BitcoinPayments
       source_root(File.expand_path("../../templates", __FILE__))
 
       def copy_initializer
-        template('bitcoin_payments.rb', 'config/initializers/bitcoin_payments.rb')
+        template('bitcoin_active_record.rb', 'config/initializers/bitcoin_active_record.rb')
       end
 
       def copy_models
@@ -22,7 +22,7 @@ module BitcoinPayments
       end
 
       def create_migrations
-        filename = 'create_bitcoin_payments_models.rb'
+        filename = 'create_bitcoin_active_record_models.rb'
         migration_template(filename, "db/migrate/#{filename}")
       end
     end

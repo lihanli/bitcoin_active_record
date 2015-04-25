@@ -11,9 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150423213159) do
+ActiveRecord::Schema.define(version: 20150425185338) do
 
-  create_table "btc_addresses", force: true do |t|
+  create_table "btc_addresses", force: :cascade do |t|
     t.string   "public_key", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20150423213159) do
 
   add_index "btc_addresses", ["public_key"], name: "index_btc_addresses_on_public_key", unique: true
 
-  create_table "payments", force: true do |t|
+  create_table "payments", force: :cascade do |t|
     t.integer  "btc_address_id", null: false
     t.decimal  "amount",         null: false
     t.string   "txid",           null: false
@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 20150423213159) do
   add_index "payments", ["btc_address_id"], name: "index_payments_on_btc_address_id"
   add_index "payments", ["txid"], name: "index_payments_on_txid", unique: true
 
-  create_table "received_payments", force: true do |t|
+  create_table "received_payments", force: :cascade do |t|
     t.integer  "payment_id",     null: false
     t.integer  "btc_address_id", null: false
     t.datetime "created_at"
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 20150423213159) do
   add_index "received_payments", ["btc_address_id"], name: "index_received_payments_on_btc_address_id"
   add_index "received_payments", ["payment_id"], name: "index_received_payments_on_payment_id", unique: true
 
-  create_table "sent_payments", force: true do |t|
+  create_table "sent_payments", force: :cascade do |t|
     t.integer  "payment_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
