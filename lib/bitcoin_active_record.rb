@@ -21,8 +21,6 @@ module BitcoinActiveRecord
     end.()
   end
 
-  ZERO = BigDecimal.new(0)
-
   mattr_accessor(:server) do
     {
       url: nil,
