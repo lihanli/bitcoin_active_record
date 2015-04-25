@@ -109,8 +109,7 @@ module BitcoinPayments
             btc_address: BtcAddress.find_or_initialize_by(public_key: transaction['address']),
           )
 
-          # TODO log to stdout
-          Rails.logger.info("Received payment #{amount} BTC from #{from_key}: #{received_payment.inspect}")
+          puts("Received payment #{amount} BTC from #{from_key}: #{received_payment.inspect}")
         end
 
         page += 1
