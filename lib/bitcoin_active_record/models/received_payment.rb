@@ -7,8 +7,5 @@ module BitcoinActiveRecord::Models::ReceivedPayment
 
     validates(:payment, presence: true)
     validates(:payment_id, uniqueness: true)
-    validates(:amount, numericality: { greater_than_or_equal_to: BitcoinActiveRecord.minimum_amount })
-
-    delegate(:amount, to: :payment)
   end
 end

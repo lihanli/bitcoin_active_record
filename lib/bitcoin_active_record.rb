@@ -3,6 +3,7 @@ require 'active_support/concern'
 require 'httparty'
 require 'bigdecimal'
 require 'auto_strip_attributes'
+require 'bitcoin_active_record/models'
 
 module BitcoinActiveRecord
   module_function
@@ -20,21 +21,4 @@ module BitcoinActiveRecord
       end
     end.()
   end
-
-  mattr_accessor(:server) do
-    {
-      url: nil,
-      username: nil,
-      password: nil,
-    }
-  end
-  mattr_accessor(:minimum_amount) { 0 }
-  mattr_accessor(:default_transaction_count) { 25 }
-  mattr_accessor(:default_account) { '' }
-
-  def setup
-    yield(self)
-  end
 end
-
-require 'bitcoin_active_record/models'

@@ -1,18 +1,27 @@
 module BitcoinActiveRecord
   class ApiError < StandardError; end
 
-  module Client
-    module_function
+  class Client
+    attr_accessor(:minimum_amount)
+    attr_accessor(:account)
+    attr_reader(:server)
+
+    def initialize(server: raise('server required'), minimum_amount: 0, account: '')
+      @server = server
+      @minimum_amount = minimum_amount
+      @account = account
+      @default_transaction_count = 25
+    end
 
     def request(method, *args)
       args.map! { |a| a.is_a?(BigDecimal) ? a.to_f : a }
       raise 'payments disabled in test/development' if method.to_sym == :sendtoaddress && (Rails.env.test? || Rails.env.development?)
 
       res = HTTParty.post(
-        BitcoinActiveRecord.server[:url],
+        @server[:url],
         basic_auth: {
-          username: BitcoinActiveRecord.server[:username],
-          password: BitcoinActiveRecord.server[:password],
+          username: @server[:username],
+          password: @server[:password],
         },
         headers: {
           'Content-Type' => 'application/json',
@@ -28,25 +37,25 @@ module BitcoinActiveRecord
       res['result']
     end
 
-    def get_new_address(account: BitcoinActiveRecord.default_account)
+    def get_new_address
       raise if Rails.env.test?
-      request(:getnewaddress, account)
+      request(:getnewaddress, @account)
     end
 
-    def get_received_transactions(account: BitcoinActiveRecord.default_account, page: 0)
-      from = page * BitcoinActiveRecord.default_transaction_count
+    def get_received_transactions(page: 0)
+      from = page * @default_transaction_count
 
       request(
         :listtransactions,
-        account,
-        BitcoinActiveRecord.default_transaction_count,
+        @account,
+        @default_transaction_count,
         from,
       ).each do |transaction|
         transaction['amount'] = BigDecimal.new(transaction['amount'].to_s) if transaction['amount']
       end.find_all do |transaction|
         (transaction['category'] == 'receive' &&
          transaction['confirmations'] > 0 &&
-         transaction['amount'] >= BitcoinActiveRecord.minimum_amount)
+         transaction['amount'] >= @minimum_amount)
       end.reverse
     end
 
@@ -62,10 +71,8 @@ module BitcoinActiveRecord
       addresses[0]
     end
 
-    def pay(public_key: nil, amount: nil, comment: '')
-      raise 'amount required' if amount.nil?
-      raise 'amount cant be zero or negative' unless amount > 0
-      raise 'public key required' if public_key.blank?
+    def pay(public_key: raise('public key required'), amount: raise('amount required'), comment: '')
+      raise('amount cant be zero or negative') unless amount > 0
 
       sent_payment = SentPayment.new(
         payment: Payment.new(
@@ -81,11 +88,11 @@ module BitcoinActiveRecord
       sent_payment
     end
 
-    def create_received_payments(account: BitcoinActiveRecord.default_account)
+    def create_received_payments
       page = 0
 
       while true
-        transactions = get_received_transactions(page: page, account: account)
+        transactions = get_received_transactions(page: page)
         return if transactions.size == 0
 
         transactions.each do |transaction|

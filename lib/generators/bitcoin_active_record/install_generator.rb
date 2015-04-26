@@ -10,11 +10,8 @@ module BitcoinActiveRecord
 
       source_root(File.expand_path("../../templates", __FILE__))
 
-      def copy_initializer
-        template('bitcoin_active_record.rb', 'config/initializers/bitcoin_active_record.rb')
-      end
-
       def copy_models
+        # TODO dont use ls here
         filenames = `ls #{File.expand_path('../../templates/models', __FILE__)}`.split("\n")
         filenames.each do |filename|
           copy_file("models/#{filename}", "app/models/#{filename}")
