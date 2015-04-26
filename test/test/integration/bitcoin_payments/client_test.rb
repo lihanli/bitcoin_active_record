@@ -3,23 +3,30 @@ require 'test_helper'
 class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
   def setup
     super
-    @client = BitcoinActiveRecord::Client
+    @client = BitcoinActiveRecord::Client.new(
+      server: $bitcoin_server_info,
+      account: :primary,
+    )
     raise 'bitcoin client config error' if @client.request(:getinfo).nil?
-    BitcoinActiveRecord.default_account = :primary
   end
 
   def assert_one_transaction(txid, transaction_args: {})
-    BitcoinActiveRecord.default_transaction_count = 1
+    set_default_transaction_count(1)
     transactions = @client.get_received_transactions(transaction_args)
 
     assert_equal(txid, transactions[0]['txid'])
     assert_equal(1, transactions.size)
   end
 
-  def test_create_received_payments
-    BitcoinActiveRecord.default_transaction_count = 2
+  def set_default_transaction_count(count)
+    @client.instance_variable_set(:@default_transaction_count, count)
+  end
 
-    @client.create_received_payments(account: :test)
+  def test_create_received_payments
+    set_default_transaction_count(2)
+    @client.account = :test
+
+    @client.create_received_payments
     received_payments = ReceivedPayment.all.to_a
     assert_equal(3, received_payments.size)
 
@@ -58,7 +65,7 @@ class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
   end
 
   def test_get_received_transactions
-    BitcoinActiveRecord.default_account = :test
+    @client.account = :test
     # test right order
     transactions = @client.get_received_transactions
 
@@ -102,9 +109,5 @@ class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
     assert_equal(public_key, payment.btc_address.public_key)
     assert_equal(amount, payment.amount)
     assert_equal(txid, payment.txid)
-  end
-
-  def teardown
-    BitcoinActiveRecord.default_transaction_count = 25
   end
 end
