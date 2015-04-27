@@ -42,24 +42,6 @@ module BitcoinActiveRecord
       request(:getnewaddress, @account)
     end
 
-    # TODO make private
-    def get_received_transactions(page: 0)
-      from = page * @default_transaction_count
-
-      request(
-        :listtransactions,
-        @account,
-        @default_transaction_count,
-        from,
-      ).each do |transaction|
-        transaction['amount'] = BigDecimal.new(transaction['amount'].to_s) if transaction['amount']
-      end.find_all do |transaction|
-        (transaction['category'] == 'receive' &&
-         transaction['confirmations'] > 0 &&
-         transaction['amount'] >= @minimum_amount)
-      end.reverse
-    end
-
     def get_sender_address(txid)
       addresses = []
       raw_tx = request('decoderawtransaction', request('getrawtransaction', txid))
@@ -122,6 +104,25 @@ module BitcoinActiveRecord
 
         page += 1
       end
+    end
+
+    private
+
+    def get_received_transactions(page: 0)
+      from = page * @default_transaction_count
+
+      request(
+        :listtransactions,
+        @account,
+        @default_transaction_count,
+        from,
+      ).each do |transaction|
+        transaction['amount'] = BigDecimal.new(transaction['amount'].to_s) if transaction['amount']
+      end.find_all do |transaction|
+        (transaction['category'] == 'receive' &&
+         transaction['confirmations'] > 0 &&
+         transaction['amount'] >= @minimum_amount)
+      end.reverse
     end
   end
 end

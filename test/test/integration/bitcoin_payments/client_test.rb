@@ -12,7 +12,7 @@ class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
 
   def assert_one_transaction(txid, transaction_args: {})
     set_default_transaction_count(1)
-    transactions = @client.get_received_transactions(transaction_args)
+    transactions = @client.send(:get_received_transactions, transaction_args)
 
     assert_equal(txid, transactions[0]['txid'])
     assert_equal(1, transactions.size)
@@ -69,7 +69,7 @@ class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
   def test_get_received_transactions
     @client.account = :test
     # test right order
-    transactions = @client.get_received_transactions
+    transactions = @client.send(:get_received_transactions)
 
     assert_equal('e9c55c74670dd51530989fb39d020a9a39c4b3af75dcc6efc770151b680c8366', transactions[0]['txid'])
     assert_equal('ade4cf44b718b4c338f6962f2501a01dd7e203aa2e2df1bdab6383c1599e0aa6', transactions[1]['txid'])
