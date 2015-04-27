@@ -11,7 +11,6 @@ rails g bitcoin_active_record:install
 * Create a bitcoin client
 ```
 client = BitcoinActiveRecord::Client.new(
-  # bitcoind server
   server: {
     url: 'http://127.0.0.1:8332',
     username: '',
