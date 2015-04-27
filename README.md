@@ -2,6 +2,13 @@
 Integrates bitcoind with activerecord to keep records of sent and received transactions in your database.  
 
 ## Quick start guide
+* Start bitcoin-qt or bitcoind with these options set in bitcoin.conf
+```
+server=1
+rpcuser=change_this
+rpcpassword=change_this
+txindex=1 # needed for getting transaction sender keys
+```
 * Add to gemfile, bundle install
 * Run generator
 ```
