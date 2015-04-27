@@ -62,6 +62,8 @@ class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
     # running again shouldnt do anything
     @client.create_received_payments
     assert_equal(3, ReceivedPayment.count)
+
+    # TODO test minimum amount
   end
 
   def test_get_received_transactions
