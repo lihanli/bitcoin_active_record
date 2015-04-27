@@ -42,6 +42,7 @@ module BitcoinActiveRecord
       request(:getnewaddress, @account)
     end
 
+    # TODO make private
     def get_received_transactions(page: 0)
       from = page * @default_transaction_count
 
