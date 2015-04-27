@@ -7,10 +7,20 @@ Integrates bitcoind with activerecord to keep records of sent and received trans
 ```
 rails g bitcoin_active_record:install
 ```
-* Put server url/username/password in config/initializers/bitcoin_active_record.rb
 * Run db:migrate
-* Run BitcoinActiveRecord::Client.create_received_payments to create records of received payments
-* Run BitcoinActiveRecord::Client.pay(public_key: public_key, amount: BigDecimal.new(1), comment: 'hello') to send a payment and save a record of it in the database
+* Create a bitcoin client
+```
+client = BitcoinActiveRecord::Client.new(
+  # bitcoind server
+  server: {
+    url: 'http://127.0.0.1:8332', 
+    username: '',
+    password: '',
+  },
+)
+```
+* Run client.create_received_payments to create records of received payments
+* Run client.pay(public_key: public_key, amount: BigDecimal.new(1), comment: 'hello') to send a payment and save a record of it in the database
 
 ## Usage
 
@@ -21,8 +31,6 @@ btc_address.rb
 column_name | type | description
 --- | --- | ---
 public_key | string | public key of a bitcoin address
-
-When creating a new btc_address model if the public_key is not set then it will get a new one generated from the bitcoind server.  
 
 payment.rb
 
@@ -47,17 +55,56 @@ payment_id | integer | foreign key
 
 Sent payments are only recorded if you send them using the gem's api.
 
-### BitcoinActiveRecord::Client methods
-* request(method, *args)
+### BitcoinActiveRecord::Client
+
+Initialize options
+
+```
+client = BitcoinActiveRecord::Client.new(
+  # required, bitcoind server credentials
+  server: {
+    url: 'http://127.0.0.1:8332', 
+    username: '',
+    password: '',
+  },
+  # optional, amounts less than this will be ignored when running create_received_payments
+  minimum_amount: BigDecimal.new('0.001'),
+  # optional, the wallet account you want to look for received transactions in
+  account: :foo,
+)
+```
+
+* client.request(method, *args)
 
 Send a request to the bitcoind server.  
 
 Examples:  
 ```
-BitcoinActiveRecord::Client.request(:getinfo)
-BitcoinActiveRecord::Client.request(:sendtoaddress, '1N2ZWQszjGDjaW5y3jAStuJQW23MbG1r4N', BigDecimal.new(1))
+client.request(:getinfo)
+client.request(:sendtoaddress, '1N2ZWQszjGDjaW5y3jAStuJQW23MbG1r4N', BigDecimal.new(1))
 ```
 
-* get_new_address(account: BitcoinActiveRecord.default_account)
+* client.get_new_address
 
-Get a new public key address from the server
+Get a new public key from the server
+
+* client.get_sender_address(txid)
+
+Get the public key of the transaction sender for a transaction with id txid
+
+* client.pay
+
+```
+client.pay(
+  # required, public key you want to send BTC to
+  public_key: '1N2ZWQszjGDjaW5y3jAStuJQW23MbG1r4N',
+  # required, amount in BTC you want to send
+  amount: BigDecimal.new('1.23'),
+  # optional, transaction comment
+  comment: 'foo',
+)
+```
+
+* client.create_received_payments
+
+Create a ReceivedPayment model for every transaction from client.account that's >= client.minimum_amount. If the latest transaction is already in the database it will assume all earlier transactions have already been saved.
