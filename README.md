@@ -63,7 +63,7 @@ Initialize options
 client = BitcoinActiveRecord::Client.new(
   # required, bitcoind server credentials
   server: {
-    url: 'http://127.0.0.1:8332', 
+    url: 'http://127.0.0.1:8332',
     username: '',
     password: '',
   },
