@@ -13,7 +13,7 @@ rails g bitcoin_active_record:install
 client = BitcoinActiveRecord::Client.new(
   # bitcoind server
   server: {
-    url: 'http://127.0.0.1:8332', 
+    url: 'http://127.0.0.1:8332',
     username: '',
     password: '',
   },
