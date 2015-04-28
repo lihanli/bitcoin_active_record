@@ -99,7 +99,7 @@ Get the public key of the transaction sender for a transaction with id txid
 
 * client.pay
 
-Pay someone and save a record of it as a sent_payment
+Pay someone and save a record of it as a SentPayment
 
 ```
 client.pay(
