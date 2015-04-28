@@ -7,6 +7,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency('httparty', '>= 0.13.1')
   gem.add_dependency('auto_strip_attributes', '>= 2.0.4')
+  gem.add_dependency('script_utils', '0.0.3')
 
   gem.files = `git ls-files`.split("\n")
   gem.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
