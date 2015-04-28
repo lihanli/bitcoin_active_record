@@ -62,12 +62,11 @@ class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
     # running again shouldnt do anything
     @client.create_received_payments
     assert_equal(3, ReceivedPayment.count)
-
-    # TODO test minimum amount
   end
 
   def test_get_received_transactions
     @client.account = :test
+    @client.minimum_amount = BigDecimal.new('0.001')
     # test right order
     transactions = @client.send(:get_received_transactions)
 
@@ -77,6 +76,10 @@ class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
     assert_one_transaction('e9c55c74670dd51530989fb39d020a9a39c4b3af75dcc6efc770151b680c8366')
     # test pagination
     assert_one_transaction('ade4cf44b718b4c338f6962f2501a01dd7e203aa2e2df1bdab6383c1599e0aa6', transaction_args: { page: 1 })
+
+    # setting minimum amount should work
+    @client.minimum_amount = BigDecimal.new('0.002')
+    assert_equal([], @client.send(:get_received_transactions))
   end
 
   def test_get_sender_address
