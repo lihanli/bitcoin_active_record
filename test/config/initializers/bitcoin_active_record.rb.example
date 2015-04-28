@@ -1,0 +1,5 @@
+$bitcoin_server_info = {
+  url: 'http://127.0.0.1:8332',
+  username: '',
+  password: '',
+}

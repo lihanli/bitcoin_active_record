@@ -1,5 +1,6 @@
 require 'rails/generators'
 require "rails/generators/active_record"
+require 'script_utils'
 
 module BitcoinActiveRecord
   module Generators
@@ -10,14 +11,9 @@ module BitcoinActiveRecord
 
       source_root(File.expand_path("../../templates", __FILE__))
 
-      def copy_initializer
-        template('bitcoin_active_record.rb', 'config/initializers/bitcoin_active_record.rb')
-      end
-
       def copy_models
-        filenames = `ls #{File.expand_path('../../templates/models', __FILE__)}`.split("\n")
-        filenames.each do |filename|
-          copy_file("models/#{filename}", "app/models/#{filename}")
+        ScriptUtils.file_names(File.expand_path('../../templates/models', __FILE__)).each do |file_name|
+          copy_file("models/#{file_name}", "app/models/#{file_name}")
         end
       end
 
