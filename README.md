@@ -84,7 +84,6 @@ client = BitcoinActiveRecord::Client.new(
 
 Send a request to the bitcoind server.  
 
-Examples:  
 ```
 client.request(:getinfo)
 client.request(:sendtoaddress, '1N2ZWQszjGDjaW5y3jAStuJQW23MbG1r4N', BigDecimal.new(1))
@@ -100,6 +99,8 @@ Get the public key of the transaction sender for a transaction with id txid
 
 * client.pay
 
+Pay someone and save a record of it as a sent_payment
+
 ```
 client.pay(
   # required, public key you want to send BTC to
@@ -108,7 +109,11 @@ client.pay(
   amount: BigDecimal.new('1.23'),
   # optional, transaction comment
   comment: 'foo',
-)
+) do |sent_payment|
+  # adding a block is optional
+  # modify the sent_payment record before it gets saved
+  sent_payment.custom_attribute = 'foo'
+end
 ```
 
 * client.create_received_payments
