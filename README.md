@@ -16,7 +16,7 @@ rails g bitcoin_active_record:install
 ```
 * Run db:migrate
 * Create a bitcoin client
-```
+```ruby
 client = BitcoinActiveRecord::Client.new(
   server: {
     url: 'http://127.0.0.1:8332',
@@ -65,7 +65,7 @@ Sent payments are only recorded if you send them using the gem's api.
 
 Initialize options
 
-```
+```ruby
 client = BitcoinActiveRecord::Client.new(
   # required, bitcoind server credentials
   server: {
@@ -84,7 +84,7 @@ client = BitcoinActiveRecord::Client.new(
 
 Send a request to the bitcoind server.  
 
-```
+```ruby
 client.request(:getinfo)
 client.request(:sendtoaddress, '1N2ZWQszjGDjaW5y3jAStuJQW23MbG1r4N', BigDecimal.new(1))
 ```
@@ -101,7 +101,7 @@ Get the public key of the transaction sender for a transaction with id txid
 
 Pay someone and save a record of it as a SentPayment
 
-```
+```ruby
 client.pay(
   # required, public key you want to send BTC to
   public_key: '1N2ZWQszjGDjaW5y3jAStuJQW23MbG1r4N',
