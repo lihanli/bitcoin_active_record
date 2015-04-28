@@ -1,5 +1,5 @@
 # bitcoin_active_record
-Integrates bitcoind with activerecord to keep records of sent and received transactions in your database.  
+Keep records of sent and received bitcoin transactions in your database using activerecord.  
 
 ## Quick start guide
 * Start bitcoin-qt or bitcoind with these options set in bitcoin.conf
