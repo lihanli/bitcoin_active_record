@@ -1,9 +1,10 @@
 Gem::Specification.new do |gem|
   gem.name = 'bitcoin_active_record'
-  gem.version = '0.0.1'
+  gem.version = '0.0.2'
   gem.summary = 'bitcoin activerecord integration'
   gem.author = 'Lihan Li'
   gem.email = 'frankieteardrop@gmail.com'
+  gem.homepage = 'https://github.com/lihanli/bitcoin_active_record'
 
   gem.add_dependency('httparty', '>= 0.13.1')
   gem.add_dependency('auto_strip_attributes', '>= 2.0.4')
