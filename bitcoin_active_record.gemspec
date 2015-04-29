@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name = 'bitcoin_active_record'
-  gem.version = '0.0.2'
+  gem.version = '0.1.0'
   gem.summary = 'bitcoin activerecord integration'
   gem.author = 'Lihan Li'
   gem.email = 'frankieteardrop@gmail.com'
