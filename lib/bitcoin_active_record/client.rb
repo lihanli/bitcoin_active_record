@@ -57,21 +57,21 @@ module BitcoinActiveRecord
     def pay(public_key: raise('public key required'), amount: raise('amount required'), comment: '')
       raise('amount cant be zero or negative') unless amount > 0
 
-      sent_payment = SentPayment.new(
-        payment: Payment.new(
+      sent_bitcoin_transaction = SentBitcoinTransaction.new(
+        bitcoin_transaction: BitcoinTransaction.new(
           btc_address: BtcAddress.find_or_initialize_by(public_key: public_key),
           amount: amount,
           txid: request(:sendtoaddress, public_key, amount, comment),
         ),
       )
-      yield(sent_payment) if block_given?
+      yield(sent_bitcoin_transaction) if block_given?
 
-      sent_payment.save!
+      sent_bitcoin_transaction.save!
 
-      sent_payment
+      sent_bitcoin_transaction
     end
 
-    def create_received_payments
+    def create_received_bitcoin_transactions
       page = 0
 
       while true
@@ -80,14 +80,14 @@ module BitcoinActiveRecord
 
         transactions.each do |transaction|
           txid = transaction['txid']
-          # already created payment for this transaction and all older ones
-          return if Payment.where(txid: txid).count > 0
+          # already created record for this transaction and all older ones
+          return if BitcoinTransaction.where(txid: txid).count > 0
 
           amount = transaction['amount']
           from_key = get_sender_address(txid)
 
-          received_payment = ReceivedPayment.create!(
-            payment: Payment.new(
+          received_bitcoin_transaction = ReceivedBitcoinTransaction.create!(
+            bitcoin_transaction: BitcoinTransaction.new(
               # payment from this address
               btc_address: BtcAddress.find_or_initialize_by(
                 public_key: from_key
@@ -99,7 +99,7 @@ module BitcoinActiveRecord
             btc_address: BtcAddress.find_or_initialize_by(public_key: transaction['address']),
           )
 
-          puts("Received payment #{amount} BTC from #{from_key}: #{received_payment.inspect}")
+          puts("Received transaction #{amount} BTC from #{from_key}: #{received_bitcoin_transaction.inspect}")
         end
 
         page += 1

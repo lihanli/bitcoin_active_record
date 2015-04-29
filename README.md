@@ -25,8 +25,8 @@ client = BitcoinActiveRecord::Client.new(
   },
 )
 ```
-* Run client.create_received_payments to create records of received payments
-* Run client.pay(public_key: public_key, amount: BigDecimal.new(1), comment: 'hello') to send a payment and save a record of it in the database
+* Run client.create_received_bitcoin_transactions to create records of received transactions
+* Run client.pay(public_key: public_key, amount: BigDecimal.new(1), comment: 'hello') to send a transaction and save a record of it in the database
 
 ## Usage
 
@@ -38,7 +38,7 @@ column_name | type | description
 --- | --- | ---
 public_key | string | public key of a bitcoin address
 
-payment.rb
+bitcoin_transaction.rb
 
 column_name | type | description
 --- | --- | ---
@@ -46,20 +46,20 @@ btc_address_id | integer | foreign key
 amount | decimal | transaction amount
 txid | string | bitcoin transaction id
 
-received_payment.rb  
+received_bitcoin_transaction.rb  
 
 column_name | type | description
 --- | --- | ---
-payment_id | integer | The btc address associated with this payment id is the address of the person who sent the payment
-btc_address_id | integer | This is the address in your wallet that the payment was sent to
+bitcoin_transaction_id | integer | The btc address associated with this bitcoin transaction id is the address of the person who sent the transaction
+btc_address_id | integer | This is the address in your wallet that the transaction was sent to
 
-sent_payment.rb  
+sent_bitcoin_transaction.rb  
 
 column_name | type | description
 --- | --- | ---
-payment_id | integer | foreign key
+bitcoin_transaction_id | integer | foreign key
 
-Sent payments are only recorded if you send them using the gem's api.
+Sent transactions are only recorded if you send them using the gem's api.
 
 ### BitcoinActiveRecord::Client
 
@@ -73,7 +73,7 @@ client = BitcoinActiveRecord::Client.new(
     username: '',
     password: '',
   },
-  # optional, amounts less than this will be ignored when running create_received_payments
+  # optional, amounts less than this will be ignored when running create_received_bitcoin_transactions
   minimum_amount: BigDecimal.new('0.001'),
   # optional, the wallet account you want to look for received transactions in
   account: :foo,
@@ -99,7 +99,7 @@ Get the public key of the transaction sender for a transaction with id txid
 
 * client.pay
 
-Pay someone and save a record of it as a SentPayment
+Pay someone and save a record of it as a SentBitcoinTransaction
 
 ```ruby
 client.pay(
@@ -109,13 +109,13 @@ client.pay(
   amount: BigDecimal.new('1.23'),
   # optional, transaction comment
   comment: 'foo',
-) do |sent_payment|
+) do |sent_bitcoin_transaction|
   # adding a block is optional
-  # modify the sent_payment record before it gets saved
-  sent_payment.custom_attribute = 'foo'
+  # modify the sent_bitcoin_transaction record before it gets saved
+  sent_bitcoin_transaction.custom_attribute = 'foo'
 end
 ```
 
-* client.create_received_payments
+* client.create_received_bitcoin_transactions
 
-Create a ReceivedPayment model for every transaction from client.account that's >= client.minimum_amount. If the latest transaction is already in the database it will assume all earlier transactions have already been saved.
+Create a ReceivedBitcoinTransaction model for every transaction from client.account that's >= client.minimum_amount. If the latest transaction is already in the database it will assume all earlier transactions have already been saved.

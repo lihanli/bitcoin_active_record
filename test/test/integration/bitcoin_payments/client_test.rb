@@ -22,13 +22,13 @@ class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
     @client.instance_variable_set(:@default_transaction_count, count)
   end
 
-  def test_create_received_payments
+  def test_create_received_bitcoin_transactions
     set_default_transaction_count(2)
     @client.account = :test
 
-    @client.create_received_payments
-    received_payments = ReceivedPayment.all.to_a
-    assert_equal(3, received_payments.size)
+    @client.create_received_bitcoin_transactions
+    received_bitcoin_transactions = ReceivedBitcoinTransaction.all.to_a
+    assert_equal(3, received_bitcoin_transactions.size)
 
     [
       {
@@ -50,18 +50,18 @@ class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
         receiver_key: '1AC8jNajH7zYikxRzRKT3otNW72B9qVDFa',
       },
     ].each_with_index do |expected_values, i|
-      received_payment = received_payments[i]
-      payment = received_payment.payment
+      received_bitcoin_transaction = received_bitcoin_transactions[i]
+      bitcoin_transaction = received_bitcoin_transaction.bitcoin_transaction
 
-      assert_equal(expected_values[:sender_key], payment.btc_address.public_key)
-      assert_equal(BigDecimal.new(expected_values[:amount]), payment.amount)
-      assert_equal(expected_values[:txid], payment.txid)
-      assert_equal(expected_values[:receiver_key], received_payment.btc_address.public_key)
+      assert_equal(expected_values[:sender_key], bitcoin_transaction.btc_address.public_key)
+      assert_equal(BigDecimal.new(expected_values[:amount]), bitcoin_transaction.amount)
+      assert_equal(expected_values[:txid], bitcoin_transaction.txid)
+      assert_equal(expected_values[:receiver_key], received_bitcoin_transaction.btc_address.public_key)
     end
 
     # running again shouldnt do anything
-    @client.create_received_payments
-    assert_equal(3, ReceivedPayment.count)
+    @client.create_received_bitcoin_transactions
+    assert_equal(3, ReceivedBitcoinTransaction.count)
   end
 
   def test_get_received_transactions
@@ -104,15 +104,15 @@ class BitcoinActiveRecordClientTest < ActiveSupport::TestCase
     txid = 'kjdksfjlk2323'
     @client.expects(:request).with(:sendtoaddress, public_key, amount, comment).returns(txid)
 
-    sent_payment = @client.pay(public_key: public_key, amount: amount, comment: comment) do |sent_payment|
-      assert_equal(false, sent_payment.persisted?)
+    sent_bitcoin_transaction = @client.pay(public_key: public_key, amount: amount, comment: comment) do |sent_bitcoin_transaction|
+      assert_equal(false, sent_bitcoin_transaction.persisted?)
     end
 
-    payment = sent_payment.payment
+    bitcoin_transaction = sent_bitcoin_transaction.bitcoin_transaction
 
-    assert_equal(true, sent_payment.persisted?)
-    assert_equal(public_key, payment.btc_address.public_key)
-    assert_equal(amount, payment.amount)
-    assert_equal(txid, payment.txid)
+    assert_equal(true, sent_bitcoin_transaction.persisted?)
+    assert_equal(public_key, bitcoin_transaction.btc_address.public_key)
+    assert_equal(amount, bitcoin_transaction.amount)
+    assert_equal(txid, bitcoin_transaction.txid)
   end
 end

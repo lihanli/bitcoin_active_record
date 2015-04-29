@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150425185338) do
+ActiveRecord::Schema.define(version: 20150429175618) do
+
+  create_table "bitcoin_transactions", force: :cascade do |t|
+    t.integer  "btc_address_id", null: false
+    t.decimal  "amount",         null: false
+    t.string   "txid",           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "bitcoin_transactions", ["btc_address_id"], name: "index_bitcoin_transactions_on_btc_address_id"
+  add_index "bitcoin_transactions", ["txid"], name: "index_bitcoin_transactions_on_txid", unique: true
 
   create_table "btc_addresses", force: :cascade do |t|
     t.string   "public_key", null: false
@@ -21,33 +32,22 @@ ActiveRecord::Schema.define(version: 20150425185338) do
 
   add_index "btc_addresses", ["public_key"], name: "index_btc_addresses_on_public_key", unique: true
 
-  create_table "payments", force: :cascade do |t|
-    t.integer  "btc_address_id", null: false
-    t.decimal  "amount",         null: false
-    t.string   "txid",           null: false
+  create_table "received_bitcoin_transactions", force: :cascade do |t|
+    t.integer  "bitcoin_transaction_id", null: false
+    t.integer  "btc_address_id",         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "payments", ["btc_address_id"], name: "index_payments_on_btc_address_id"
-  add_index "payments", ["txid"], name: "index_payments_on_txid", unique: true
+  add_index "received_bitcoin_transactions", ["bitcoin_transaction_id"], name: "index_received_bitcoin_transactions_on_bitcoin_transaction_id", unique: true
+  add_index "received_bitcoin_transactions", ["btc_address_id"], name: "index_received_bitcoin_transactions_on_btc_address_id"
 
-  create_table "received_payments", force: :cascade do |t|
-    t.integer  "payment_id",     null: false
-    t.integer  "btc_address_id", null: false
+  create_table "sent_bitcoin_transactions", force: :cascade do |t|
+    t.integer  "bitcoin_transaction_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "received_payments", ["btc_address_id"], name: "index_received_payments_on_btc_address_id"
-  add_index "received_payments", ["payment_id"], name: "index_received_payments_on_payment_id", unique: true
-
-  create_table "sent_payments", force: :cascade do |t|
-    t.integer  "payment_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "sent_payments", ["payment_id"], name: "index_sent_payments_on_payment_id", unique: true
+  add_index "sent_bitcoin_transactions", ["bitcoin_transaction_id"], name: "index_sent_bitcoin_transactions_on_bitcoin_transaction_id", unique: true
 
 end
